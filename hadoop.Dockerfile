@@ -29,17 +29,19 @@ RUN /bin/echo -e 'dsano.1\ndsano.1' | passwd root
 #COPY ./hadoop-3.3.4.tar.gz hadoop-3.3.4.tar.gz
 #COPY ./apache-hive-3.1.3-bin.tar.gz apache-hive-3.1.3-bin.tar.gz
 
-RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz
-RUN wget https://downloads.apache.org/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz
+# RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz
+# RUN wget https://downloads.apache.org/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz
 
 
 
-RUN tar xzvf hadoop.tar.gz -C /usr/local \
-	&& rm hadoop.tar.gz \
+RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz \
+	&& tar xzvf hadoop-3.3.4.tar.gz -C /usr/local \
+	&& rm hadoop-3.3.4.tar.gz \
 	&& mv /usr/local/hadoop-3.3.4 $HADOOP_HOME \
 	&& chown -R root $HADOOP_HOME
 
-RUN tar xzvf apache-hive-3.1.3-bin.tar.gz -C /usr/local \
+RUN wget https://downloads.apache.org/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz \
+	&& tar xzvf apache-hive-3.1.3-bin.tar.gz -C /usr/local \
 	&& rm apache-hive-3.1.3-bin.tar.gz \
 	&& mv /usr/local/apache-hive-3.1.3-bin $HIVE_HOME
 
