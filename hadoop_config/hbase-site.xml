@@ -1,0 +1,21 @@
+<configuration>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>file:/home/root/HBase/HFiles</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/home/root/zookeeper</value>
+    </property>
+    <!-- <property>
+        <name>hbase.cluster.distributed</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>hdfs://master:8030/hbase</value>
+    </property> -->
+
+
+</configuration>
+

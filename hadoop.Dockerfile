@@ -3,8 +3,11 @@ FROM ubuntu:20.04
 ARG USER=root
 ARG HADOOP_HOME=/usr/local/hadoop
 ARG HIVE_HOME=/usr/local/hive
+ARG HBASE_HOME=/usr/local/hbase
 ARG HADOOP_ENV=$HADOOP_HOME/etc/hadoop/hadoop-env.sh
+ARG HBASE_ENV=$HBASE_HOME/conf/hbase-env.sh
 ARG DEBIAN_FRONTEND=noninteractive
+
 #Install mysql
 
 RUN echo "mysql-community-server mysql-community-server/root-pass password 'dsano.1'" | debconf-set-selections
@@ -45,15 +48,26 @@ RUN wget https://downloads.apache.org/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.
 	&& rm apache-hive-3.1.3-bin.tar.gz \
 	&& mv /usr/local/apache-hive-3.1.3-bin $HIVE_HOME
 
+RUN wget https://dlcdn.apache.org/hbase/2.5.5/hbase-2.5.5-bin.tar.gz \
+	&& tar xzvf hbase-2.5.5-bin.tar.gz -C /usr/local \
+	&& rm hbase-2.5.5-bin.tar.gz \
+    && mv -v /usr/local/hbase-2.5.5 $HBASE_HOME
+
+RUN wget https://dlcdn.apache.org/zookeeper/zookeeper-3.7.1/apache-zookeeper-3.7.1-bin.tar.gz \
+	&& tar xzvf apache-zookeeper-3.7.1-bin.tar.gz -C /usr/local \
+	&& rm apache-zookeeper-3.7.1-bin.tar.gz \
+    && mv -v /usr/local/apache-zookeeper-3.7.1-bin /usr/local/zookeeper
 
 
 WORKDIR /usr/local/hadoop
 
 #set env
-RUN echo "export VISIBLE=now" >> ~/.bashrc
+RUN echo "export VISIBLE=now" >> ~/.bashrcb
 RUN echo "export HADOOP_HOME=$HADOOP_HOME" >> ~/.bashrc
 RUN echo "export HIVE_HOME=$HIVE_HOME" >> ~/.bashrc
-RUN echo "export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin" >> ~/.bashrc
+RUN echo "export HBASE_HOME=$HBASE_HOME" >> ~/.bashrc
+RUN echo "export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$HBASE_HOME/bin" >> ~/.bashrc
+
 
 
 #setup hadoop
@@ -63,7 +77,8 @@ RUN echo 'export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"
 	echo "export HDFS_NAMENODE_USER=$USER" >> $HADOOP_ENV && \
 	echo "export HDFS_SECONDARYNAMENODE_USER=$USER" >> $HADOOP_ENV && \
 	echo "export YARN_NODEMANAGER_USER=$USER" >> $HADOOP_ENV && \
-	echo "export YARN_RESOURCEMANAGER_USER=$USER" >> $HADOOP_ENV
+	echo "export YARN_RESOURCEMANAGER_USER=$USER" >> $HADOOP_ENV && \
+	echo 'export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"' >> $HBASE_ENV
 ENV HADOOP_HOME=$HADOOP_HOME
 
 COPY ./hadoop_config/* /usr/local/hadoop/etc/hadoop/
@@ -79,6 +94,8 @@ RUN rm /usr/local/hive/lib/log4j-slf4j-impl-*.jar
 COPY ./hadoop_config/hive-site.xml /usr/local/hive/conf/hive-site.xml
 RUN service mysql start && ${HIVE_HOME}/bin/schematool -initSchema -dbType mysql
 
+#setup Hbase
+
 ## set ssh key
 RUN ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
 RUN cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys
@@ -93,7 +110,7 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 RUN echo '/usr/sbin/sshd -D' >> ~/.bashrc
 
-EXPOSE 9870/TCP 9868/TCP 9864/TCP 8088/TCP 22/TCP
+EXPOSE 9870/TCP 9868/TCP 9864/TCP 8088/TCP 60010/TCP 22/TCP
 
 
 CMD bash

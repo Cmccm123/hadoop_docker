@@ -9,6 +9,7 @@ services:
       - "9868:9868"
       - "8088:8088"
       - "9864:9864"
+      - "60010:60010"
       - "2222:22"
     restart: always
     networks: 
@@ -21,6 +22,7 @@ services:
       - ./hadoop_config/mapred-site.xml:/usr/local/hadoop/etc/hadoop/mapred-site.xml
       - ./hadoop_config/workers:/usr/local/hadoop/etc/hadoop/workers
       - ./hadoop_config/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml
+      - ./hadoop_config/hbase-site.xml:/usr/local/hbase/conf/hbase-site.xml
       - ./hadoop_config/hive-site.xml:/usr/local/hive/conf/hive-site.xml
       - ./data/Vresult.csv:/home/root/data/Vresult.csv
     entrypoint: ["bash", "-c", " /usr/sbin/sshd -D & /usr/local/hadoop/sbin/start-all.sh & service mysql start & tail -f /dev/null"]
