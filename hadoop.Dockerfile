@@ -48,7 +48,7 @@ RUN wget https://downloads.apache.org/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.
 	&& rm apache-hive-3.1.3-bin.tar.gz \
 	&& mv /usr/local/apache-hive-3.1.3-bin $HIVE_HOME
 
-RUN wget 0 \
+RUN wget https://dlcdn.apache.org/hbase/2.5.5/hbase-2.5.5-bin.tar.gz \
 	&& tar xzvf hbase-2.5.5-bin.tar.gz -C /usr/local \
 	&& rm hbase-2.5.5-bin.tar.gz \
     && mv -v /usr/local/hbase-2.5.5 $HBASE_HOME 
@@ -74,7 +74,8 @@ RUN echo 'export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"
 	echo "export HDFS_SECONDARYNAMENODE_USER=$USER" >> $HADOOP_ENV && \
 	echo "export YARN_NODEMANAGER_USER=$USER" >> $HADOOP_ENV && \
 	echo "export YARN_RESOURCEMANAGER_USER=$USER" >> $HADOOP_ENV && \
-	echo 'export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"' >> $HBASE_ENV
+	echo 'export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"' >> $HBASE_ENV && \
+	echo 'export HBASE_DISABLE_HADOOP_CLASSPATH_LOOKUP="true"' >> $HBASE_ENV 
 ENV HADOOP_HOME=$HADOOP_HOME
 
 COPY ./hadoop_config/* /usr/local/hadoop/etc/hadoop/
@@ -91,7 +92,8 @@ COPY ./hadoop_config/hive-site.xml /usr/local/hive/conf/hive-site.xml
 RUN service mysql start && ${HIVE_HOME}/bin/schematool -initSchema -dbType mysql
 
 #setup Hbase
-RUN rm rm $HBASE_HOME/lib/client-facing-thirdparty/slf4j-api-1.7.33.jar
+RUN rm rm $HBASE_HOME/lib/client-facing-thirdparty/log4j-slf4j-impl-*.jar
+
 ## set ssh key
 RUN ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
 RUN cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys
