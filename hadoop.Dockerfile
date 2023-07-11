@@ -85,13 +85,13 @@ WORKDIR /usr/local
 RUN wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j_8.0.33-1ubuntu20.04_all.deb
 RUN dpkg -i mysql-connector-j_8.0.33-1ubuntu20.04_all.deb
 RUN cp /usr/share/java/mysql-connector-java-8.0.33.jar $HIVE_HOME/lib/
-RUN rm /usr/local/hive/lib/log4j-slf4j-impl-*.jar
+RUN rm ${HIVE_HOME}/lib/log4j-slf4j-impl-*.jar
 
 COPY ./hadoop_config/hive-site.xml /usr/local/hive/conf/hive-site.xml
 RUN service mysql start && ${HIVE_HOME}/bin/schematool -initSchema -dbType mysql
 
 #setup Hbase
-
+RUN rm rm $HBASE_HOME/lib/client-facing-thirdparty/slf4j-api-1.7.33.jar
 ## set ssh key
 RUN ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
 RUN cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys
