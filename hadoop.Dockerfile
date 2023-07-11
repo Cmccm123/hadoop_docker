@@ -37,10 +37,10 @@ RUN /bin/echo -e 'dsano.1\ndsano.1' | passwd root
 
 
 
-RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz \
-	&& tar xzvf hadoop-3.3.4.tar.gz -C /usr/local \
-	&& rm hadoop-3.3.4.tar.gz \
-	&& mv /usr/local/hadoop-3.3.4 $HADOOP_HOME \
+RUN wget https://downloads.apache.org/hadoop/common/hadoop-3.3.2/hadoop-3.3.2.tar.gz \
+	&& tar xzvf hadoop-3.3.2.tar.gz -C /usr/local \
+	&& rm hadoop-3.3.2.tar.gz \
+	&& mv /usr/local/hadoop-3.3.2 $HADOOP_HOME \
 	&& chown -R root $HADOOP_HOME
 
 RUN wget https://downloads.apache.org/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz \
@@ -48,15 +48,11 @@ RUN wget https://downloads.apache.org/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.
 	&& rm apache-hive-3.1.3-bin.tar.gz \
 	&& mv /usr/local/apache-hive-3.1.3-bin $HIVE_HOME
 
-RUN wget https://dlcdn.apache.org/hbase/2.5.5/hbase-2.5.5-bin.tar.gz \
+RUN wget 0 \
 	&& tar xzvf hbase-2.5.5-bin.tar.gz -C /usr/local \
 	&& rm hbase-2.5.5-bin.tar.gz \
-    && mv -v /usr/local/hbase-2.5.5 $HBASE_HOME
+    && mv -v /usr/local/hbase-2.5.5 $HBASE_HOME 
 
-RUN wget https://dlcdn.apache.org/zookeeper/zookeeper-3.7.1/apache-zookeeper-3.7.1-bin.tar.gz \
-	&& tar xzvf apache-zookeeper-3.7.1-bin.tar.gz -C /usr/local \
-	&& rm apache-zookeeper-3.7.1-bin.tar.gz \
-    && mv -v /usr/local/apache-zookeeper-3.7.1-bin /usr/local/zookeeper
 
 
 WORKDIR /usr/local/hadoop

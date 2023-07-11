@@ -13,9 +13,12 @@
     </property>
     <property>
         <name>hbase.rootdir</name>
-        <value>hdfs://master:8030/hbase</value>
+        <value>hdfs://master:9000/hbase</value>
     </property>
-
+    <property>
+   		<name>hbase.unsafe.stream.capability.enforce</name>
+    	<value>true</value>
+  	</property>
 
 </configuration>
 
