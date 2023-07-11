@@ -92,7 +92,7 @@ COPY ./hadoop_config/hive-site.xml /usr/local/hive/conf/hive-site.xml
 RUN service mysql start && ${HIVE_HOME}/bin/schematool -initSchema -dbType mysql
 
 #setup Hbase
-RUN rm rm $HBASE_HOME/lib/client-facing-thirdparty/log4j-slf4j-impl-*.jar
+RUN rm $HBASE_HOME/lib/client-facing-thirdparty/log4j-slf4j-impl-*.jar
 
 ## set ssh key
 RUN ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
